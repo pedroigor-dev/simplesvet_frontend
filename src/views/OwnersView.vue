@@ -54,8 +54,10 @@
     </div>
 
     <Teleport to="body">
-      <div v-if="showModal" class="modal-overlay" @click.self="showModal = false">
-        <div class="modal">
+      <Transition name="overlay">
+        <div v-if="showModal" class="modal-overlay" @click.self="showModal = false">
+          <Transition name="modal" appear>
+            <div v-if="showModal" class="modal">
           <h2>{{ editing ? 'Editar Tutor' : 'Novo Tutor' }}</h2>
           <div class="form-group">
             <label>Nome completo</label>
@@ -75,8 +77,10 @@
               {{ saving ? 'Salvando...' : 'Salvar' }}
             </button>
           </div>
+          </div>
+        </Transition>
         </div>
-      </div>
+      </Transition>
     </Teleport>
 
     <ConfirmDialog ref="confirmDialog" />
