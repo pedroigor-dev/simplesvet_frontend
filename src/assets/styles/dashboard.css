@@ -1,5 +1,12 @@
 .dashboard { display: flex; flex-direction: column; gap: 24px; }
 
+.info-row {
+  padding: 24px 0;
+  text-align: center;
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);

@@ -9,7 +9,7 @@
     </div>
 
     <div class="toolbar toolbar--standalone">
-      <input v-model="search" placeholder="🔍  Buscar por nome, raça..." class="search-input" />
+      <input v-model="search" placeholder="Buscar por nome, raça..." class="search-input" />
       <span class="count-label">{{ filtered.length }} pet(s)</span>
     </div>
 

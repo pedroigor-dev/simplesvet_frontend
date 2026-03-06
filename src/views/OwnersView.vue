@@ -10,7 +10,7 @@
 
     <div class="card">
       <div class="toolbar">
-        <input v-model="search" placeholder="🔍  Buscar por nome, e-mail..." class="search-input" />
+        <input v-model="search" placeholder="Buscar por nome, e-mail..." class="search-input" />
         <span class="count-label">{{ filtered.length }} tutor(es)</span>
       </div>
 

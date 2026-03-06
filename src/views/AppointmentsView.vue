@@ -10,7 +10,7 @@
 
     <div class="card">
       <div class="toolbar">
-        <input v-model="search" placeholder="🔍  Buscar por pet ou tutor..." class="search-input" />
+        <input v-model="search" placeholder="Buscar por pet ou tutor..." class="search-input" />
         <div class="filter-pills">
           <button
             v-for="f in FILTERS"
