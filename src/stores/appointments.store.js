@@ -12,7 +12,8 @@ export const useAppointmentsStore = defineStore('appointments', () => {
     error.value = null
     try {
       const { data } = await appointmentsService.getAll()
-      appointments.value = data['hydra:member'] ?? data
+      const raw = data['hydra:member'] ?? data
+      appointments.value = Array.isArray(raw) ? raw : []
     } catch (e) {
       error.value = e.message
     } finally {
@@ -21,8 +22,8 @@ export const useAppointmentsStore = defineStore('appointments', () => {
   }
 
   async function create(payload) {
-    const { data } = await appointmentsService.create(payload)
-    appointments.value.push(data)
+    await appointmentsService.create(payload)
+    await fetchAll()
   }
 
   async function update(id, payload) {

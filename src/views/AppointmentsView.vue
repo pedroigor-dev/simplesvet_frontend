@@ -38,7 +38,7 @@
           <tr v-if="loading"><td colspan="6" class="loading-cell">Carregando...</td></tr>
           <tr v-else-if="filtered.length === 0"><td colspan="6">
             <div class="empty-state">
-              <div class="empty-icon">📅</div>
+              <div class="empty-icon"><CalendarDays :size="48" color="var(--muted)" :stroke-width="1.5" /></div>
               <p>Nenhuma consulta encontrada</p>
             </div>
           </td></tr>
@@ -50,8 +50,8 @@
             <td><span class="badge" :class="statusClass(a.status)">{{ a.status }}</span></td>
             <td>
               <div class="row-actions">
-                <button class="btn btn--ghost btn--sm" @click="openModal(a)">✏️ Editar</button>
-                <button class="btn btn--danger btn--sm" @click="handleRemove(a.id)">🗑️</button>
+                <button class="btn btn--ghost btn--sm" @click="openModal(a)"><Pencil :size="14" /> Editar</button>
+                <button class="btn btn--danger btn--sm" @click="handleRemove(a.id)"><Trash2 :size="14" /></button>
               </div>
             </td>
           </tr>
@@ -118,6 +118,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
+import { Pencil, Trash2, CalendarDays } from 'lucide-vue-next'
 import { useAppointments } from '@/composables/useAppointments.js'
 
 const FILTERS = [

@@ -43,7 +43,7 @@
         <div v-else-if="recentPets.length === 0" class="info-row">Nenhum pet cadastrado.</div>
         <div v-else class="pets-grid">
           <div v-for="pet in recentPets" :key="pet.id" class="pet-mini-card">
-            <div class="pet-mini-avatar">{{ iconFor(pet.species) }}</div>
+            <div class="pet-mini-avatar"><PawPrint :size="26" /></div>
             <span class="pet-mini-name">{{ pet.name }}</span>
             <span class="pet-mini-species">{{ pet.species }}</span>
           </div>
@@ -55,6 +55,7 @@
 
 <script setup>
 import { computed, onMounted } from 'vue'
+import { PawPrint } from 'lucide-vue-next'
 import { useOwnersStore } from '@/stores/owners.store.js'
 import { usePetsStore } from '@/stores/pets.store.js'
 import { useAppointmentsStore } from '@/stores/appointments.store.js'
@@ -71,7 +72,6 @@ onMounted(() => {
 
 const TODAY = new Date().toISOString().slice(0, 10)
 
-const SPECIES_ICONS = { Cão: '🐕', Gato: '🐈', Coelho: '🐇', Ave: '🐦', Outro: '🐾' }
 const AVATAR_COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#a855f7', '#ef4444', '#0ea5e9']
 const STATUS_BADGE = {
   Confirmado: 'badge--success',
@@ -80,9 +80,6 @@ const STATUS_BADGE = {
   Cancelado:  'badge--cancelled',
 }
 
-function iconFor(species) {
-  return SPECIES_ICONS[species] ?? '🐾'
-}
 function avatarColor(id) {
   return AVATAR_COLORS[(id ?? 0) % AVATAR_COLORS.length]
 }
@@ -90,7 +87,6 @@ function statusBadgeClass(status) {
   return STATUS_BADGE[status] ?? 'badge--pending'
 }
 
-// Suporta tanto scheduledAt (ISO datetime) quanto campos date/time separados
 function apptDate(appt) {
   return (appt.scheduledAt ?? appt.date ?? '').slice(0, 10)
 }

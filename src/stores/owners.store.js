@@ -12,7 +12,8 @@ export const useOwnersStore = defineStore('owners', () => {
     error.value = null
     try {
       const { data } = await ownersService.getAll()
-      owners.value = data['hydra:member'] ?? data
+      const raw = data['hydra:member'] ?? data
+      owners.value = Array.isArray(raw) ? raw : []
     } catch (e) {
       error.value = e.message
     } finally {
@@ -21,8 +22,8 @@ export const useOwnersStore = defineStore('owners', () => {
   }
 
   async function create(payload) {
-    const { data } = await ownersService.create(payload)
-    owners.value.push(data)
+    await ownersService.create(payload)
+    await fetchAll()
   }
 
   async function update(id, payload) {

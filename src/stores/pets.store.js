@@ -12,7 +12,8 @@ export const usePetsStore = defineStore('pets', () => {
     error.value = null
     try {
       const { data } = await petsService.getAll()
-      pets.value = data['hydra:member'] ?? data
+      const raw = data['hydra:member'] ?? data
+      pets.value = Array.isArray(raw) ? raw : []
     } catch (e) {
       error.value = e.message
     } finally {
@@ -21,8 +22,8 @@ export const usePetsStore = defineStore('pets', () => {
   }
 
   async function create(payload) {
-    const { data } = await petsService.create(payload)
-    pets.value.push(data)
+    await petsService.create(payload)
+    await fetchAll()
   }
 
   async function update(id, payload) {

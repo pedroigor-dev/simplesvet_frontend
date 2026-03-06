@@ -16,13 +16,13 @@
     <div v-if="loading" class="loading-cell">Carregando...</div>
 
     <div v-else-if="filtered.length === 0" class="empty-state">
-      <div class="empty-icon">🐾</div>
+      <div class="empty-icon"><PawPrint :size="48" color="var(--muted)" :stroke-width="1.5" /></div>
       <p>Nenhum pet encontrado</p>
     </div>
 
     <div v-else class="pets-grid">
       <div class="pet-card" v-for="pet in filtered" :key="pet.id">
-        <div class="pet-emoji">{{ iconFor(pet.species) }}</div>
+        <div class="pet-emoji"><PawPrint :size="30" /></div>
         <div class="pet-body">
           <h3>{{ pet.name }}</h3>
           <p class="pet-breed">{{ pet.breed }}</p>
@@ -30,11 +30,11 @@
             <span class="badge badge--info">{{ pet.species }}</span>
             <span class="muted">{{ pet.age }} ano(s)</span>
           </div>
-          <div class="pet-owner">👤 {{ pet.owner?.name ?? pet.ownerName }}</div>
+          <div class="pet-owner"><User :size="13" /> {{ pet.owner?.name ?? pet.ownerName }}</div>
         </div>
         <div class="pet-actions">
-          <button class="btn btn--ghost btn--sm" @click="openModal(pet)">✏️</button>
-          <button class="btn btn--danger btn--sm" @click="handleRemove(pet.id)">🗑️</button>
+          <button class="btn btn--ghost btn--sm" @click="openModal(pet)"><Pencil :size="14" /></button>
+          <button class="btn btn--danger btn--sm" @click="handleRemove(pet.id)"><Trash2 :size="14" /></button>
         </div>
       </div>
     </div>
@@ -50,7 +50,7 @@
           <div class="form-group">
             <label>Espécie</label>
             <select v-model="form.species">
-              <option v-for="(icon, name) in SPECIES_ICONS" :key="name" :value="name">{{ icon }} {{ name }}</option>
+              <option v-for="(_, name) in SPECIES_ICONS" :key="name" :value="name">{{ name }}</option>
             </select>
           </div>
           <div class="form-group">
@@ -75,6 +75,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
+import { Pencil, Trash2, PawPrint, User } from 'lucide-vue-next'
 import { usePets } from '@/composables/usePets.js'
 
 const { filtered, loading, search, fetchAll, create, update, remove, iconFor, SPECIES_ICONS } = usePets()

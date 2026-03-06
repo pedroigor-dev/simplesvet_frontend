@@ -28,7 +28,7 @@
           <tr v-if="loading"><td colspan="5" class="loading-cell">Carregando...</td></tr>
           <tr v-else-if="filtered.length === 0"><td colspan="5">
             <div class="empty-state">
-              <div class="empty-icon">👤</div>
+              <div class="empty-icon"><UserRound :size="48" color="var(--muted)" :stroke-width="1.5" /></div>
               <p>Nenhum tutor encontrado</p>
             </div>
           </td></tr>
@@ -44,8 +44,8 @@
             <td><span class="badge badge--purple">{{ owner.pets?.length ?? 0 }} pet(s)</span></td>
             <td>
               <div class="row-actions">
-                <button class="btn btn--ghost btn--sm" @click="openModal(owner)">✏️ Editar</button>
-                <button class="btn btn--danger btn--sm" @click="handleRemove(owner.id)">🗑️</button>
+                <button class="btn btn--ghost btn--sm" @click="openModal(owner)"><Pencil :size="14" /> Editar</button>
+                <button class="btn btn--danger btn--sm" @click="handleRemove(owner.id)"><Trash2 :size="14" /></button>
               </div>
             </td>
           </tr>
@@ -83,6 +83,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
+import { Pencil, Trash2, UserRound } from 'lucide-vue-next'
 import { useOwners } from '@/composables/useOwners.js'
 
 const { filtered, loading, search, fetchAll, create, update, remove, initials } = useOwners()
