@@ -12,18 +12,18 @@
   align-items: center;
   gap: 12px;
   padding: 24px 20px;
-  border-bottom: 1px solid #1f2937;
+  border-bottom: 1px solid #2d1f3d;
 }
 .logo-icon {
   width: 40px;
   height: 40px;
-  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  background: transparent;
   border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
   flex-shrink: 0;
+  overflow: hidden;
 }
 .logo-brand {
   display: block;
@@ -50,7 +50,7 @@
 .nav-section {
   font-size: 10px;
   font-weight: 600;
-  color: #4b5563;
+  color: #5b4d6e;
   text-transform: uppercase;
   letter-spacing: .08em;
   padding: 0 8px 10px;
@@ -72,8 +72,9 @@
   color: #e5e7eb;
 }
 .nav-item--active {
-  background: var(--primary) !important;
+  background: linear-gradient(90deg, #f97316, #ef4444) !important;
   color: white !important;
+  box-shadow: 0 4px 14px rgba(249,115,22,.35);
 }
 .nav-item--active .nav-icon {
   color: white;
@@ -95,12 +96,12 @@
   align-items: center;
   gap: 12px;
   padding: 16px 20px;
-  border-top: 1px solid #1f2937;
+  border-top: 1px solid #2d1f3d;
 }
 .user-avatar {
   width: 36px;
   height: 36px;
-  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  background: linear-gradient(135deg, #7c3aed, #2563eb);
   border-radius: 50%;
   display: flex;
   align-items: center;

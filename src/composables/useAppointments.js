@@ -15,20 +15,17 @@ export function useAppointments() {
 
   const filtered = computed(() => {
     const q = search.value.toLowerCase()
+    if (!q) return store.appointments
     return store.appointments.filter((a) => {
-      const matchSearch =
-        !q ||
-        a.petName?.toLowerCase().includes(q) ||
-        a.owner?.toLowerCase().includes(q)
-      const matchFilter =
-        activeFilter.value === 'all' || a.status === activeFilter.value
-      return matchSearch && matchFilter
+      const pet = typeof a.pet === 'object' ? a.pet?.name : ''
+      const owner = typeof a.owner === 'object' ? a.owner?.name : ''
+      return (
+        pet?.toLowerCase().includes(q) ||
+        owner?.toLowerCase().includes(q) ||
+        a.description?.toLowerCase().includes(q)
+      )
     })
   })
-
-  function statusClass(status) {
-    return STATUS_CLASS[status] ?? 'badge--info'
-  }
 
   return {
     appointments: store.appointments,
@@ -36,11 +33,9 @@ export function useAppointments() {
     loading: computed(() => store.loading),
     error: computed(() => store.error),
     search,
-    activeFilter,
     fetchAll: store.fetchAll,
     create: store.create,
     update: store.update,
     remove: store.remove,
-    statusClass,
   }
 }

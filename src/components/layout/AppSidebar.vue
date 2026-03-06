@@ -2,9 +2,7 @@
   <aside class="sidebar">
     <div class="sidebar__logo">
       <div class="logo-icon">
-        <svg viewBox="0 0 24 24" fill="currentColor" width="22" height="22">
-          <path d="M4.5 11a2.5 2.5 0 100-5 2.5 2.5 0 000 5zm15 0a2.5 2.5 0 100-5 2.5 2.5 0 000 5zM7 6.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5zm10 0a2.5 2.5 0 100-5 2.5 2.5 0 000 5zM12 22c-3.5 0-5.8-1.5-7-3.8-.8-1.5-.8-3 .2-4.7.7-1.2 1.8-1.8 3.1-2.1.9-.2 1.8-.4 2.5-.5h2.4c.7.1 1.6.3 2.5.5 1.3.3 2.4.9 3.1 2.1 1 1.7 1 3.2.2 4.7C17.8 20.5 15.5 22 12 22z"/>
-        </svg>
+        <img src="/simplesvetlogo.png" alt="SimplesVet" width="36" height="36" style="object-fit:contain;display:block;" />
       </div>
       <div class="logo-text">
         <span class="logo-brand">PetLove</span>

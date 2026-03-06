@@ -28,7 +28,7 @@
           <p class="pet-breed">{{ pet.breed }}</p>
           <div class="pet-meta">
             <span class="badge badge--info">{{ pet.species }}</span>
-            <span class="muted">{{ pet.age }} ano(s)</span>
+            <span class="muted">{{ pet.birthday ? new Date(pet.birthday).toLocaleDateString('pt-BR') : '—' }}</span>
           </div>
           <div class="pet-owner"><User :size="13" /> {{ pet.owner?.name ?? pet.ownerName }}</div>
         </div>
@@ -58,8 +58,15 @@
             <input v-model="form.breed" placeholder="Ex: Labrador" />
           </div>
           <div class="form-group">
-            <label>Idade (anos)</label>
-            <input v-model.number="form.age" type="number" min="0" />
+            <label>Data de Nascimento</label>
+            <input v-model="form.birthday" type="date" />
+          </div>
+          <div class="form-group">
+            <label>Tutor</label>
+            <select v-model="form.owner">
+              <option value="">Selecione um tutor...</option>
+              <option v-for="o in owners" :key="o.id" :value="`/api/owners/${o.id}`">{{ o.name }}</option>
+            </select>
           </div>
           <div class="modal-actions">
             <button class="btn btn--ghost" @click="showModal = false">Cancelar</button>
@@ -74,24 +81,28 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { Pencil, Trash2, PawPrint, User } from 'lucide-vue-next'
 import { usePets } from '@/composables/usePets.js'
+import { useOwnersStore } from '@/stores/owners.store.js'
 
 const { filtered, loading, search, fetchAll, create, update, remove, iconFor, SPECIES_ICONS } = usePets()
+const ownersStore = useOwnersStore()
+const owners = computed(() => ownersStore.owners)
 
 const showModal = ref(false)
 const saving = ref(false)
 const editing = ref(null)
-const form = ref({ name: '', species: 'Cão', breed: '', age: 0 })
+const form = ref({ name: '', species: 'Cão', breed: '', birthday: '', owner: '' })
 
-onMounted(fetchAll)
+onMounted(() => { fetchAll(); ownersStore.fetchAll() })
 
 function openModal(pet = null) {
   editing.value = pet
+  const ownerIri = typeof pet?.owner === 'string' ? pet.owner : (pet?.owner?.['@id'] ?? `/api/owners/${pet?.owner?.id ?? ''}`)
   form.value = pet
-    ? { name: pet.name, species: pet.species, breed: pet.breed, age: pet.age }
-    : { name: '', species: 'Cão', breed: '', age: 0 }
+    ? { name: pet.name, species: pet.species, breed: pet.breed, birthday: pet.birthday?.slice(0, 10) ?? '', owner: ownerIri }
+    : { name: '', species: 'Cão', breed: '', birthday: '', owner: '' }
   showModal.value = true
 }
 
