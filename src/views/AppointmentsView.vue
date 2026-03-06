@@ -91,6 +91,8 @@
         </div>
       </div>
     </Teleport>
+
+    <ConfirmDialog ref="confirmDialog" />
   </div>
 </template>
 
@@ -100,6 +102,7 @@ import { Pencil, Trash2, CalendarDays } from 'lucide-vue-next'
 import { useAppointments } from '@/composables/useAppointments.js'
 import { usePetsStore } from '@/stores/pets.store.js'
 import { useOwnersStore } from '@/stores/owners.store.js'
+import ConfirmDialog from '@/components/ConfirmDialog.vue'
 
 const { filtered, loading, search, fetchAll, create, update, remove } = useAppointments()
 const petsStore = usePetsStore()
@@ -113,6 +116,7 @@ const showModal = ref(false)
 const saving = ref(false)
 const editing = ref(null)
 const form = ref({ pet: '', owner: '', date: '', time: '', description: '' })
+const confirmDialog = ref()
 
 function petName(a) {
   if (typeof a.pet === 'object' && a.pet) return a.pet.name ?? '—'
@@ -168,7 +172,11 @@ async function handleSave() {
 }
 
 async function handleRemove(id) {
-  if (confirm('Deseja remover esta consulta?')) await remove(id)
+  const confirmed = await confirmDialog.value.open({
+    title: 'Remover Consulta',
+    message: 'Deseja remover esta consulta? Esta ação não poderá ser desfeita.',
+  })
+  if (confirmed) await remove(id)
 }
 </script>
 

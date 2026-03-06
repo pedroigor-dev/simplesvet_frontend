@@ -78,6 +78,8 @@
         </div>
       </div>
     </Teleport>
+
+    <ConfirmDialog ref="confirmDialog" />
   </div>
 </template>
 
@@ -85,13 +87,14 @@
 import { ref, onMounted } from 'vue'
 import { Pencil, Trash2, UserRound } from 'lucide-vue-next'
 import { useOwners } from '@/composables/useOwners.js'
+import ConfirmDialog from '@/components/ConfirmDialog.vue'
 
 const { filtered, loading, search, fetchAll, create, update, remove, initials } = useOwners()
-
 const showModal = ref(false)
 const saving = ref(false)
 const editing = ref(null)
 const form = ref({ name: '', email: '', phone: '' })
+const confirmDialog = ref()
 
 onMounted(fetchAll)
 
@@ -116,7 +119,11 @@ async function handleSave() {
 }
 
 async function handleRemove(id) {
-  if (confirm('Deseja remover este tutor?')) await remove(id)
+  const confirmed = await confirmDialog.value.open({
+    title: 'Remover Tutor',
+    message: 'Deseja remover este tutor? Esta ação não poderá ser desfeita.'
+  })
+  if (confirmed) await remove(id)
 }
 </script>
 

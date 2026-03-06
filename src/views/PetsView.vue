@@ -77,6 +77,8 @@
         </div>
       </div>
     </Teleport>
+
+    <ConfirmDialog ref="confirmDialog" />
   </div>
 </template>
 
@@ -85,6 +87,7 @@ import { ref, onMounted, computed } from 'vue'
 import { Pencil, Trash2, PawPrint, User } from 'lucide-vue-next'
 import { usePets } from '@/composables/usePets.js'
 import { useOwnersStore } from '@/stores/owners.store.js'
+import ConfirmDialog from '@/components/ConfirmDialog.vue'
 
 const { filtered, loading, search, fetchAll, create, update, remove, iconFor, SPECIES_ICONS } = usePets()
 const ownersStore = useOwnersStore()
@@ -94,6 +97,7 @@ const showModal = ref(false)
 const saving = ref(false)
 const editing = ref(null)
 const form = ref({ name: '', species: 'Cão', breed: '', birthday: '', owner: '' })
+const confirmDialog = ref()
 
 onMounted(() => { fetchAll(); ownersStore.fetchAll() })
 
@@ -121,7 +125,11 @@ async function handleSave() {
 }
 
 async function handleRemove(id) {
-  if (confirm('Deseja remover este pet?')) await remove(id)
+  const confirmed = await confirmDialog.value.open({
+    title: 'Remover Pet',
+    message: 'Deseja remover este pet? Esta ação não poderá ser desfeita.'
+  })
+  if (confirmed) await remove(id)
 }
 </script>
 
