@@ -12,7 +12,7 @@ export const useOwnersStore = defineStore('owners', () => {
     error.value = null
     try {
       const { data } = await ownersService.getAll()
-      const raw = data['hydra:member'] ?? data
+      const raw = data['member'] ?? data['hydra:member'] ?? data
       owners.value = Array.isArray(raw) ? raw : []
     } catch (e) {
       error.value = e.message

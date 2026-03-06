@@ -95,7 +95,6 @@ function apptTime(appt) {
   return appt.time ?? '—'
 }
 
-// pet/owner podem ser objetos embutidos ou IRI strings (API Platform)
 function apptPetName(appt) {
   if (typeof appt.pet === 'object' && appt.pet) return appt.pet.name ?? '—'
   return appt.petName ?? (typeof appt.pet === 'string' ? appt.pet.split('/').pop() : '—')

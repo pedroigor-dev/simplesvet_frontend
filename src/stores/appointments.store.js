@@ -12,7 +12,7 @@ export const useAppointmentsStore = defineStore('appointments', () => {
     error.value = null
     try {
       const { data } = await appointmentsService.getAll()
-      const raw = data['hydra:member'] ?? data
+      const raw = data['member'] ?? data['hydra:member'] ?? data
       appointments.value = Array.isArray(raw) ? raw : []
     } catch (e) {
       error.value = e.message
