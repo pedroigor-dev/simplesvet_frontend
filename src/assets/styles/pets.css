@@ -7,6 +7,9 @@
 .page-header h1 { font-size: 22px; font-weight: 700; }
 .page-subtitle { font-size: 14px; color: var(--text-muted); margin-top: 2px; }
 
+.input--error { border-color: var(--danger) !important; background: var(--danger-light); }
+.field-error { display: block; font-size: .75rem; color: var(--danger); margin-top: 3px; }
+
 .toolbar--standalone {
   display: flex;
   align-items: center;
@@ -57,7 +60,7 @@
 .pet-owner { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
 .pet-actions { display: flex; gap: 6px; justify-content: flex-end; margin-top: 4px; }
 
-/* Buttons */
+
 .btn {
   display: inline-flex;
   align-items: center;
@@ -80,7 +83,7 @@
 .btn--danger { background: #fef2f2; color: var(--danger); border: 1px solid #fecaca; }
 .btn--danger:hover { background: var(--danger); color: #fff; }
 
-/* Badge */
+
 .badge {
   display: inline-block;
   padding: 3px 10px;
@@ -91,7 +94,7 @@
 .badge--info    { background: #eff6ff; color: #2563eb; }
 .badge--success { background: var(--success-light); color: var(--success); }
 
-/* Modal */
+
 .modal-overlay {
   position: fixed; inset: 0;
   background: rgba(0,0,0,.45);

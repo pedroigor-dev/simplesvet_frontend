@@ -47,7 +47,8 @@
           <h2>{{ editing ? 'Editar Pet' : 'Novo Pet' }}</h2>
           <div class="form-group">
             <label>Nome do pet</label>
-            <input v-model="form.name" placeholder="Ex: Rex" />
+            <input v-model="form.name" placeholder="Ex: Rex" :class="{ 'input--error': errors.name }" />
+            <span v-if="errors.name" class="field-error">{{ errors.name }}</span>
           </div>
           <div class="form-group">
             <label>Espécie</label>
@@ -57,18 +58,21 @@
           </div>
           <div class="form-group">
             <label>Raça</label>
-            <input v-model="form.breed" placeholder="Ex: Labrador" />
+            <input v-model="form.breed" placeholder="Ex: Labrador" :class="{ 'input--error': errors.breed }" />
+            <span v-if="errors.breed" class="field-error">{{ errors.breed }}</span>
           </div>
           <div class="form-group">
             <label>Data de Nascimento</label>
-            <input v-model="form.birthday" type="date" />
+            <input v-model="form.birthday" type="date" :max="today" :class="{ 'input--error': errors.birthday }" />
+            <span v-if="errors.birthday" class="field-error">{{ errors.birthday }}</span>
           </div>
           <div class="form-group">
             <label>Tutor</label>
-            <select v-model="form.owner">
+            <select v-model="form.owner" :class="{ 'input--error': errors.owner }">
               <option value="">Selecione um tutor...</option>
               <option v-for="o in owners" :key="o.id" :value="`/api/owners/${o.id}`">{{ o.name }}</option>
             </select>
+            <span v-if="errors.owner" class="field-error">{{ errors.owner }}</span>
           </div>
           <div class="modal-actions">
             <button class="btn btn--ghost" @click="showModal = false">Cancelar</button>
@@ -87,7 +91,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, computed, reactive } from 'vue'
 import { Pencil, Trash2, PawPrint, User } from 'lucide-vue-next'
 import { usePets } from '@/composables/usePets.js'
 import { useOwnersStore } from '@/stores/owners.store.js'
@@ -102,8 +106,48 @@ const saving = ref(false)
 const editing = ref(null)
 const form = ref({ name: '', species: 'Cão', breed: '', birthday: '', owner: '' })
 const confirmDialog = ref()
+const errors = reactive({ name: '', breed: '', birthday: '', owner: '' })
+const today = new Date().toISOString().slice(0, 10)
 
 onMounted(() => { fetchAll(); ownersStore.fetchAll() })
+
+function validatePet() {
+  errors.name = errors.breed = errors.birthday = errors.owner = ''
+  let ok = true
+
+  const name = form.value.name.trim()
+  if (!name) {
+    errors.name = 'Nome do pet é obrigatório.'; ok = false
+  } else if (name.length < 2) {
+    errors.name = 'Nome deve ter ao menos 2 caracteres.'; ok = false
+  }
+
+  const breed = form.value.breed.trim()
+  if (!breed) {
+    errors.breed = 'Raça é obrigatória.'; ok = false
+  } else if (breed.length < 2) {
+    errors.breed = 'Raça deve ter ao menos 2 caracteres.'; ok = false
+  }
+
+  const bday = form.value.birthday
+  if (bday) {
+    const bdayDate = new Date(bday)
+    const now = new Date()
+    if (bdayDate > now) {
+      errors.birthday = 'Data de nascimento não pode ser no futuro.'; ok = false
+    } else if (bdayDate.getFullYear() < 1900) {
+      errors.birthday = 'Data de nascimento inválida.'; ok = false
+    } else if ((now - bdayDate) / (1000 * 60 * 60 * 24 * 365) > 50) {
+      errors.birthday = 'Idade acima de 50 anos parece incorreta.'; ok = false
+    }
+  }
+
+  if (!form.value.owner) {
+    errors.owner = 'Selecione um tutor.'; ok = false
+  }
+
+  return ok
+}
 
 function openModal(pet = null) {
   editing.value = pet
@@ -111,10 +155,12 @@ function openModal(pet = null) {
   form.value = pet
     ? { name: pet.name, species: pet.species, breed: pet.breed, birthday: pet.birthday?.slice(0, 10) ?? '', owner: ownerIri }
     : { name: '', species: 'Cão', breed: '', birthday: '', owner: '' }
+  errors.name = errors.breed = errors.birthday = errors.owner = ''
   showModal.value = true
 }
 
 async function handleSave() {
+  if (!validatePet()) return
   saving.value = true
   try {
     if (editing.value) {

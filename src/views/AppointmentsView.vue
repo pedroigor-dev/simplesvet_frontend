@@ -57,32 +57,37 @@
           <div class="form-row">
             <div class="form-group">
               <label>Pet</label>
-              <select v-model="form.pet">
+              <select v-model="form.pet" :class="{ 'input--error': errors.pet }">
                 <option value="">Selecione um pet...</option>
                 <option v-for="p in pets" :key="p.id" :value="`/api/pets/${p.id}`">{{ p.name }}</option>
               </select>
+              <span v-if="errors.pet" class="field-error">{{ errors.pet }}</span>
             </div>
             <div class="form-group">
               <label>Tutor</label>
-              <select v-model="form.owner">
+              <select v-model="form.owner" :class="{ 'input--error': errors.owner }">
                 <option value="">Selecione um tutor...</option>
                 <option v-for="o in owners" :key="o.id" :value="`/api/owners/${o.id}`">{{ o.name }}</option>
               </select>
+              <span v-if="errors.owner" class="field-error">{{ errors.owner }}</span>
             </div>
           </div>
           <div class="form-row">
             <div class="form-group">
               <label>Data</label>
-              <input v-model="form.date" type="date" />
+              <input v-model="form.date" type="date" :min="editing ? undefined : today" :class="{ 'input--error': errors.date }" />
+              <span v-if="errors.date" class="field-error">{{ errors.date }}</span>
             </div>
             <div class="form-group">
               <label>Horário</label>
-              <input v-model="form.time" type="time" />
+              <input v-model="form.time" type="time" :class="{ 'input--error': errors.time }" />
+              <span v-if="errors.time" class="field-error">{{ errors.time }}</span>
             </div>
           </div>
           <div class="form-group">
             <label>Descrição</label>
-            <input v-model="form.description" placeholder="Ex: Consulta de rotina" />
+            <input v-model="form.description" placeholder="Ex: Consulta de rotina" :class="{ 'input--error': errors.description }" />
+            <span v-if="errors.description" class="field-error">{{ errors.description }}</span>
           </div>
           <div class="modal-actions">
             <button class="btn btn--ghost" @click="showModal = false">Cancelar</button>
@@ -101,7 +106,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, computed, reactive } from 'vue'
 import { Pencil, Trash2, CalendarDays } from 'lucide-vue-next'
 import { useAppointments } from '@/composables/useAppointments.js'
 import { usePetsStore } from '@/stores/pets.store.js'
@@ -118,6 +123,37 @@ onMounted(() => { fetchAll(); petsStore.fetchAll(); ownersStore.fetchAll() })
 
 const showModal = ref(false)
 const saving = ref(false)
+const errors = reactive({ pet: '', owner: '', date: '', time: '', description: '' })
+const today = new Date().toISOString().slice(0, 10)
+
+function validateAppointment() {
+  errors.pet = errors.owner = errors.date = errors.time = errors.description = ''
+  let ok = true
+
+  if (!form.value.pet)
+    { errors.pet = 'Selecione um pet.'; ok = false }
+
+  if (!form.value.owner)
+    { errors.owner = 'Selecione um tutor.'; ok = false }
+
+  if (!form.value.date) {
+    errors.date = 'Data é obrigatória.'; ok = false
+  } else if (!editing.value && form.value.date < today) {
+    errors.date = 'Não é possível agendar em uma data passada.'; ok = false
+  }
+
+  if (!form.value.time)
+    { errors.time = 'Horário é obrigatório.'; ok = false }
+
+  const desc = form.value.description.trim()
+  if (!desc) {
+    errors.description = 'Descrição é obrigatória.'; ok = false
+  } else if (desc.length < 5) {
+    errors.description = 'Descrição deve ter ao menos 5 caracteres.'; ok = false
+  }
+
+  return ok
+}
 const editing = ref(null)
 const form = ref({ pet: '', owner: '', date: '', time: '', description: '' })
 const confirmDialog = ref()
@@ -152,10 +188,12 @@ function openModal(appt = null) {
   } else {
     form.value = { pet: '', owner: '', date: '', time: '', description: '' }
   }
+  errors.pet = errors.owner = errors.date = errors.time = errors.description = ''
   showModal.value = true
 }
 
 async function handleSave() {
+  if (!validateAppointment()) return
   saving.value = true
   try {
     const payload = {

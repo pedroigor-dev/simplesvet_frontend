@@ -7,6 +7,9 @@
 .page-header h1 { font-size: 22px; font-weight: 700; }
 .page-subtitle { font-size: 14px; color: var(--text-muted); margin-top: 2px; }
 
+.input--error { border-color: var(--danger) !important; background: var(--danger-light); }
+.field-error { display: block; font-size: .75rem; color: var(--danger); margin-top: 3px; }
+
 .card {
   background: var(--card-bg);
   border-radius: var(--radius);
@@ -70,7 +73,6 @@ tbody td { padding: 13px 16px; }
 
 .row-actions { display: flex; gap: 6px; }
 
-/* Buttons */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -93,7 +95,6 @@ tbody td { padding: 13px 16px; }
 .btn--danger { background: #fef2f2; color: var(--danger); border: 1px solid #fecaca; }
 .btn--danger:hover { background: var(--danger); color: #fff; }
 
-/* Badge */
 .badge {
   display: inline-block;
   padding: 3px 10px;
@@ -108,7 +109,6 @@ tbody td { padding: 13px 16px; }
 .badge--done    { background: var(--success-light); color: var(--success); }
 .badge--danger  { background: var(--danger-light); color: var(--danger); }
 
-/* Modal */
 .modal-overlay {
   position: fixed; inset: 0;
   background: rgba(0,0,0,.45);

@@ -176,7 +176,6 @@ onUnmounted(() => {
   50%       { opacity: 0; }
 }
 
-/* progress bar */
 .loading-bar-track {
   width: 100%;
   height: 3px;

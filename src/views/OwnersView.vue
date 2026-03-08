@@ -61,15 +61,18 @@
           <h2>{{ editing ? 'Editar Tutor' : 'Novo Tutor' }}</h2>
           <div class="form-group">
             <label>Nome completo</label>
-            <input v-model="form.name" placeholder="Ex: João da Silva" />
+            <input v-model="form.name" placeholder="Ex: João da Silva" :class="{ 'input--error': errors.name }" />
+            <span v-if="errors.name" class="field-error">{{ errors.name }}</span>
           </div>
           <div class="form-group">
             <label>E-mail</label>
-            <input v-model="form.email" type="email" placeholder="joao@email.com" />
+            <input v-model="form.email" type="text" placeholder="joao@email.com" :class="{ 'input--error': errors.email }" />
+            <span v-if="errors.email" class="field-error">{{ errors.email }}</span>
           </div>
           <div class="form-group">
             <label>Telefone</label>
-            <input v-model="form.phone" placeholder="(71) 99999-9999" />
+            <input v-model="form.phone" placeholder="(71) 99999-9999" :class="{ 'input--error': errors.phone }" />
+            <span v-if="errors.phone" class="field-error">{{ errors.phone }}</span>
           </div>
           <div class="modal-actions">
             <button class="btn btn--ghost" @click="showModal = false">Cancelar</button>
@@ -88,7 +91,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, reactive } from 'vue'
 import { Pencil, Trash2, UserRound } from 'lucide-vue-next'
 import { useOwners } from '@/composables/useOwners.js'
 import ConfirmDialog from '@/components/ConfirmDialog.vue'
@@ -99,16 +102,54 @@ const saving = ref(false)
 const editing = ref(null)
 const form = ref({ name: '', email: '', phone: '' })
 const confirmDialog = ref()
+const errors = reactive({ name: '', email: '', phone: '' })
 
 onMounted(fetchAll)
+
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
+const PHONE_RE = /^\(?\d{2}\)?[\s-]?\d{4,5}[\s-]?\d{4}$/
+
+function validateOwner() {
+  errors.name  = ''
+  errors.email = ''
+  errors.phone = ''
+  let ok = true
+
+  const name = form.value.name.trim()
+  if (!name) {
+    errors.name = 'Nome é obrigatório.'; ok = false
+  } else if (name.length < 3) {
+    errors.name = 'Nome deve ter ao menos 3 caracteres.'; ok = false
+  } else if (/\d/.test(name)) {
+    errors.name = 'Nome não pode conter números.'; ok = false
+  }
+
+  const email = form.value.email.trim()
+  if (!email) {
+    errors.email = 'E-mail é obrigatório.'; ok = false
+  } else if (!EMAIL_RE.test(email)) {
+    errors.email = 'Informe um e-mail válido.'; ok = false
+  }
+
+  const phone = form.value.phone.trim()
+  if (!phone) {
+    errors.phone = 'Telefone é obrigatório.'; ok = false
+  } else if (!PHONE_RE.test(phone.replace(/\s/g, ''))) {
+    errors.phone = 'Formato inválido. Ex: (71) 99999-9999.'; ok = false
+  }
+
+  return ok
+}
 
 function openModal(owner = null) {
   editing.value = owner
   form.value = owner ? { name: owner.name, email: owner.email, phone: owner.phone } : { name: '', email: '', phone: '' }
+  errors.name = errors.email = errors.phone = ''
   showModal.value = true
 }
 
 async function handleSave() {
+  if (!validateOwner()) return
   saving.value = true
   try {
     if (editing.value) {

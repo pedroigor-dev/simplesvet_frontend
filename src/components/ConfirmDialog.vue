@@ -64,11 +64,9 @@ defineExpose({ open })
 .btn--danger { background: #ef4444; color: #fff; }
 .btn--danger:hover { background: #dc2626; }
 
-/* overlay fade */
 .overlay-enter-active, .overlay-leave-active { transition: opacity 0.2s ease; }
 .overlay-enter-from, .overlay-leave-to { opacity: 0; }
 
-/* modal pop + slide */
 .modal-enter-active {
   transition: opacity 0.22s ease, transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
