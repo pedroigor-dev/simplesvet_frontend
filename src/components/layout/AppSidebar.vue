@@ -46,7 +46,7 @@
       <div class="sidebar__user">
         <div class="user-avatar">DR</div>
         <div class="user-info">
-          <span class="user-name">Dr. Rafael Lima</span>
+          <span class="user-name">Dr. Felipe Lima</span>
           <span class="user-role">Veterinário</span>
         </div>
       </div>
