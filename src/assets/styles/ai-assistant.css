@@ -3,8 +3,8 @@
   bottom: 1.75rem;
   right: 1.75rem;
   z-index: 1000;
-  width: 52px;
-  height: 52px;
+  width: 68px;
+  height: 68px;
   border-radius: 50%;
   background: var(--primary);
   color: #fff;
@@ -13,10 +13,52 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 20px rgba(249,115,22,.45);
+  box-shadow: 0 4px 24px rgba(249,115,22,.5);
   transition: background 0.2s, transform 0.15s;
 }
 .ai-fab:hover { background: var(--primary-dark); transform: scale(1.07); }
+.ai-fab-gif { width: 54px; height: 54px; object-fit: cover; border-radius: 50%; }
+
+.ai-tooltip {
+  position: fixed;
+  bottom: 8.5rem;
+  right: 1.75rem;
+  z-index: 1001;
+  background: #fff;
+  border-radius: 14px;
+  padding: .7rem 1rem;
+  box-shadow: 0 8px 32px rgba(0,0,0,.18);
+  max-width: 220px;
+  font-size: .84rem;
+  color: var(--text);
+  line-height: 1.45;
+  pointer-events: none;
+  transform-origin: bottom right;
+}
+.ai-tooltip::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  right: 24px;
+  border-width: 8px 8px 0;
+  border-style: solid;
+  border-color: #fff transparent transparent;
+  filter: drop-shadow(0 2px 2px rgba(0,0,0,.08));
+}
+.tooltip-enter-active {
+  animation: tooltip-in .45s cubic-bezier(.34,1.56,.64,1) both;
+}
+.tooltip-leave-active {
+  animation: tooltip-out .3s ease both;
+}
+@keyframes tooltip-in {
+  from { opacity: 0; transform: scale(.7) translateY(12px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+@keyframes tooltip-out {
+  from { opacity: 1; transform: scale(1) translateY(0); }
+  to   { opacity: 0; transform: scale(.85) translateY(6px); }
+}
 
 .ai-panel {
   position: fixed;

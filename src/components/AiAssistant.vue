@@ -1,12 +1,14 @@
 <template>
   <button class="ai-fab" @click="open = !open" :title="open ? 'Fechar assistente' : 'Assistente IA'">
-    <svg v-if="!open" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-    </svg>
+    <img v-if="!open" src="/doguinho.gif" class="ai-fab-gif" alt="Assistente" />
     <svg v-else xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
       <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
     </svg>
   </button>
+
+  <Transition name="tooltip">
+    <div v-if="showTooltip && !open" class="ai-tooltip">🐶 Au au! Precisa de ajuda?<br>Vem falar comigo! 🐾</div>
+  </Transition>
 
   <Transition name="chat-slide">
     <div v-if="open" class="ai-panel">
@@ -63,17 +65,33 @@
 </template>
 
 <script setup>
-import { ref, nextTick } from 'vue'
+import { ref, nextTick, onMounted, onUnmounted } from 'vue'
 
 const SYSTEM_PROMPT = `Você é o assistente virtual da SimplesVet, um software de gestão para clínicas e petshops veterinários.
 Ajude os usuários com dúvidas sobre o sistema (agendamentos, prontuários, cadastro de tutores e pets, financeiro, relatórios) e sobre gestão veterinária em geral.
 Seja objetivo, simpático e profissional. Responda sempre em português do Brasil.`
 
-const open      = ref(false)
-const input     = ref('')
-const loading   = ref(false)
-const messages  = ref([])
+const open       = ref(false)
+const input      = ref('')
+const loading    = ref(false)
+const messages   = ref([])
 const messagesEl = ref(null)
+const showTooltip = ref(false)
+
+let tooltipInterval = null
+
+function triggerTooltip() {
+  if (open.value) return
+  showTooltip.value = true
+  setTimeout(() => { showTooltip.value = false }, 4500)
+}
+
+onMounted(() => {
+  setTimeout(triggerTooltip, 3000)
+  tooltipInterval = setInterval(triggerTooltip, 20000)
+})
+
+onUnmounted(() => clearInterval(tooltipInterval))
 
 async function send() {
   const text = input.value.trim()
