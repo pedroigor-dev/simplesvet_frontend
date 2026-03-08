@@ -1,6 +1,13 @@
 <template>
   <header class="header">
     <div class="header__left">
+      <button class="hamburger-btn" @click="sidebarMobileOpen = !sidebarMobileOpen" aria-label="Abrir menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="20" height="20" stroke-linecap="round">
+          <line x1="3" y1="6" x2="21" y2="6"/>
+          <line x1="3" y1="12" x2="21" y2="12"/>
+          <line x1="3" y1="18" x2="21" y2="18"/>
+        </svg>
+      </button>
       <h1 class="page-title">{{ pageTitle }}</h1>
     </div>
     <div class="header__right">
@@ -28,8 +35,10 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, inject, ref } from 'vue'
 import { useRoute } from 'vue-router'
+
+const sidebarMobileOpen = inject('sidebarMobileOpen', ref(false))
 
 const route = useRoute()
 const titles = {
