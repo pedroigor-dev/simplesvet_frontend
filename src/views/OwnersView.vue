@@ -8,6 +8,13 @@
       <button class="btn btn--primary" @click="openModal()">+ Novo Tutor</button>
     </div>
 
+    <Transition name="error-toast">
+      <div v-if="deleteError" class="delete-error-banner">
+        <span>{{ deleteError }}</span>
+        <button @click="deleteError = ''">✕</button>
+      </div>
+    </Transition>
+
     <div class="card">
       <div class="toolbar">
         <input v-model="search" placeholder="Buscar por nome, e-mail..." class="search-input" />
@@ -103,6 +110,7 @@ const editing = ref(null)
 const form = ref({ name: '', email: '', phone: '' })
 const confirmDialog = ref()
 const errors = reactive({ name: '', email: '', phone: '' })
+const deleteError = ref('')
 
 onMounted(fetchAll)
 
@@ -168,7 +176,16 @@ async function handleRemove(id) {
     title: 'Remover Tutor',
     message: 'Deseja remover este tutor? Esta ação não poderá ser desfeita.'
   })
-  if (confirmed) await remove(id)
+  if (!confirmed) return
+  try {
+    await remove(id)
+  } catch (e) {
+    const msg = e.message ?? ''
+    deleteError.value = msg.toLowerCase().includes('constraint') || msg.includes('500') || msg.includes('integrity')
+      ? 'Não é possível remover este tutor pois ele possui pets cadastrados. Remova os pets primeiro.'
+      : `Erro ao remover tutor: ${msg}`
+    setTimeout(() => { deleteError.value = '' }, 6000)
+  }
 }
 </script>
 

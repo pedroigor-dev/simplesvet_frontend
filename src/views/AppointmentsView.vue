@@ -8,6 +8,13 @@
       <button class="btn btn--primary" @click="openModal()">+ Nova Consulta</button>
     </div>
 
+    <Transition name="error-toast">
+      <div v-if="deleteError" class="delete-error-banner">
+        <span>{{ deleteError }}</span>
+        <button @click="deleteError = ''">✕</button>
+      </div>
+    </Transition>
+
     <div class="card">
       <div class="toolbar">
         <input v-model="search" placeholder="Buscar por descrição..." class="search-input" />
@@ -125,6 +132,7 @@ const showModal = ref(false)
 const saving = ref(false)
 const errors = reactive({ pet: '', owner: '', date: '', time: '', description: '' })
 const today = new Date().toISOString().slice(0, 10)
+const deleteError = ref('')
 
 function validateAppointment() {
   errors.pet = errors.owner = errors.date = errors.time = errors.description = ''
@@ -218,7 +226,13 @@ async function handleRemove(id) {
     title: 'Remover Consulta',
     message: 'Deseja remover esta consulta? Esta ação não poderá ser desfeita.',
   })
-  if (confirmed) await remove(id)
+  if (!confirmed) return
+  try {
+    await remove(id)
+  } catch (e) {
+    deleteError.value = `Erro ao remover consulta: ${e.message ?? 'tente novamente.'}`
+    setTimeout(() => { deleteError.value = '' }, 6000)
+  }
 }
 </script>
 

@@ -8,6 +8,13 @@
       <button class="btn btn--primary" @click="openModal()">+ Novo Pet</button>
     </div>
 
+    <Transition name="error-toast">
+      <div v-if="deleteError" class="delete-error-banner">
+        <span>{{ deleteError }}</span>
+        <button @click="deleteError = ''">✕</button>
+      </div>
+    </Transition>
+
     <div class="toolbar toolbar--standalone">
       <input v-model="search" placeholder="Buscar por nome, raça..." class="search-input" />
       <span class="count-label">{{ filtered.length }} pet(s)</span>
@@ -108,6 +115,7 @@ const form = ref({ name: '', species: 'Cão', breed: '', birthday: '', owner: ''
 const confirmDialog = ref()
 const errors = reactive({ name: '', breed: '', birthday: '', owner: '' })
 const today = new Date().toISOString().slice(0, 10)
+const deleteError = ref('')
 
 onMounted(() => { fetchAll(); ownersStore.fetchAll() })
 
@@ -179,7 +187,16 @@ async function handleRemove(id) {
     title: 'Remover Pet',
     message: 'Deseja remover este pet? Esta ação não poderá ser desfeita.'
   })
-  if (confirmed) await remove(id)
+  if (!confirmed) return
+  try {
+    await remove(id)
+  } catch (e) {
+    const msg = e.message ?? ''
+    deleteError.value = msg.toLowerCase().includes('constraint') || msg.includes('500') || msg.includes('integrity')
+      ? 'Não é possível remover este pet pois ele possui consultas vinculadas. Remova as consultas primeiro.'
+      : `Erro ao remover pet: ${msg}`
+    setTimeout(() => { deleteError.value = '' }, 6000)
+  }
 }
 </script>
 
